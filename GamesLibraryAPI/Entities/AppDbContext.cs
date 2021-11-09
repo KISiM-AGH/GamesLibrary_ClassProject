@@ -86,6 +86,7 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<Game>()
             .Property(g => g.Price)
+            .HasColumnType("decimal(6, 2)")
             .IsRequired();
         
         modelBuilder.Entity<Game>()
