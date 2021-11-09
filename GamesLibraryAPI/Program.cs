@@ -1,6 +1,8 @@
 using GamesLibraryAPI.Entities;
 using GamesLibraryAPI.Middleware;
+using GamesLibraryAPI.Services.Account;
 using GamesLibraryShared;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,12 +30,15 @@ builder.Services.AddMvc().ConfigureApiBehaviorOptions(options =>
     };
 });
 
+builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 
 var app = builder.Build();
 
