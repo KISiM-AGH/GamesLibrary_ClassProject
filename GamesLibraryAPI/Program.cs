@@ -1,7 +1,11 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using GamesLibraryAPI.Entities;
 using GamesLibraryAPI.Middleware;
 using GamesLibraryAPI.Services.Account;
+using GamesLibraryAPI.Validators;
 using GamesLibraryShared;
+using GamesLibraryShared.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,6 +35,7 @@ builder.Services.AddMvc().ConfigureApiBehaviorOptions(options =>
 });
 
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+builder.Services.AddControllers().AddFluentValidation();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -38,6 +43,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
+builder.Services.AddScoped<IValidator<UserRegisterRequest>, RegisterUserValidator>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 
 var app = builder.Build();
