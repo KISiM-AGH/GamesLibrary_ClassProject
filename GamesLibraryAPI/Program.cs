@@ -1,9 +1,13 @@
+using GamesLibraryAPI.Entities;
 using GamesLibraryShared;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddDbContext<AppDbContext>();
 
 // Add custom validation errors response
 
