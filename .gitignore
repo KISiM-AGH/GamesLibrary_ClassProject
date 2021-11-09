@@ -2,3 +2,5 @@
 /.idea
 /GamesLibraryAPI/bin
 /GamesLibraryAPI/obj
+/GamesLibraryShared/obj
+/GamesLibraryShared/bin
