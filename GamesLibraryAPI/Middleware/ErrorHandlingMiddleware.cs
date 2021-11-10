@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using GamesLibraryAPI.Exceptions;
 using GamesLibraryShared;
 
 namespace GamesLibraryAPI.Middleware;
@@ -10,6 +11,10 @@ public class ErrorHandlingMiddleware : IMiddleware
         try
         {
             await next.Invoke(context);
+        }
+        catch (BadRequestException ex)
+        {
+            await HandleExceptionAsync(context, ex, HttpStatusCode.BadRequest);
         }
         catch (Exception ex)
         {
@@ -26,7 +31,7 @@ public class ErrorHandlingMiddleware : IMiddleware
         await context.Response.WriteAsJsonAsync(new BaseResponse()
         {
             Error = true,
-            Message = message + exception.StackTrace // StackTrace only for testing purposes
+            Message = message + exception.Message + exception.StackTrace // StackTrace only for testing purposes
         });
     }
 }
