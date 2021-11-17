@@ -1,4 +1,6 @@
-﻿namespace GamesLibraryAPI.Entities;
+﻿using GamesLibraryShared.Games;
+
+namespace GamesLibraryAPI.Entities;
 
 public class Platform
 {

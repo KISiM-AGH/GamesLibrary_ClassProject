@@ -16,6 +16,10 @@ public class ErrorHandlingMiddleware : IMiddleware
         {
             await HandleExceptionAsync(context, ex, HttpStatusCode.BadRequest);
         }
+        catch (UserNotFoundException ex)
+        {
+            await HandleExceptionAsync(context, ex, HttpStatusCode.NoContent);
+        }
         catch (Exception ex)
         {
             await HandleExceptionAsync(context, ex, HttpStatusCode.InternalServerError, "Something went wrong : ");

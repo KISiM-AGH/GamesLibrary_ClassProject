@@ -19,7 +19,7 @@ public class AccountController : Controller
     [HttpPost]
     public ActionResult<BaseResponse> RegisterUser([FromBody]UserRegisterRequest registerUser)
     {
-        _accountService.RegisterUser(registerUser);
+        _accountService.Register(registerUser);
         return Ok(new BaseResponse()
         {
             Error = false,

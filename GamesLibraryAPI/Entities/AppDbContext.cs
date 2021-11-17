@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using GamesLibraryShared.Games;
+using GamesLibraryShared.User;
+using Microsoft.EntityFrameworkCore;
 
 namespace GamesLibraryAPI.Entities;
 

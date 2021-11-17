@@ -26,7 +26,7 @@ public class AccountService : IAccountService
         _jwtSettings = jwtSettings;
     }
 
-    public void RegisterUser(UserRegisterRequest registerRequest)
+    public void Register(UserRegisterRequest registerRequest)
     {
         var newUser = new User()
         {
@@ -71,7 +71,8 @@ public class AccountService : IAccountService
                 new Claim("surname", user.Surname),
                 new Claim("email", user.Email),
                 new Claim("birth", user.DateOfBirth.ToString(CultureInfo.CurrentCulture)),
-                new Claim("role", user.RoleId.ToString())
+                new Claim("role", user.Role.RoleName.ToString())
+                
             }),
             Expires = DateTime.UtcNow.AddDays(7),
             SigningCredentials =
@@ -83,8 +84,50 @@ public class AccountService : IAccountService
         return tokenHandler.WriteToken(token);
     }
 
-    public async Task<User?> GetById(int id)
+    public async Task<UserResponse> GetById(int id)
     {
-        return await _dbContext.Users.FirstOrDefaultAsync(x => x.UserId == id);
+        var user = await GetUser(id);
+
+        var userResponse = new UserResponse()
+        {
+            UserId = user.UserId,
+            Name = user.Name,
+            Surname = user.Surname,
+            Email = user.Email,
+            DateOfBirth = user.DateOfBirth,
+            UserName = user.UserName,
+            
+            Role = user.Role.RoleName
+        };
+
+        return userResponse;
     }
+
+    public async Task<IEnumerable<UserResponse>> GetAllUsers()
+    {
+        var users = await _dbContext.Users.ToListAsync();
+        var response = users.Select(user => new UserResponse()
+        {
+            UserId = user.UserId,
+            Name = user.Name,
+            Surname = user.Surname,
+            Email = user.Email,
+            DateOfBirth = user.DateOfBirth,
+            UserName = user.UserName,
+            Role = user.Role.RoleName
+        });
+
+        return response;
+    }
+
+    private async Task<User> GetUser(int id)
+    {
+        var user = await _dbContext.Users
+            .FirstOrDefaultAsync(x => x.UserId == id);
+        
+        if (user is null) throw new UserNotFoundException("User not found");
+        return user;
+    }
+
+
 }

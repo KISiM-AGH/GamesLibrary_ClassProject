@@ -1,4 +1,4 @@
-﻿namespace GamesLibraryAPI.Entities;
+﻿namespace GamesLibraryShared.User;
 
 public enum AvailableRoles
 {

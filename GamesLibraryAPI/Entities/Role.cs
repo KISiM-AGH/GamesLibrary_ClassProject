@@ -1,4 +1,6 @@
-﻿namespace GamesLibraryAPI.Entities;
+﻿using GamesLibraryShared.User;
+
+namespace GamesLibraryAPI.Entities;
 
 public class Role
 {

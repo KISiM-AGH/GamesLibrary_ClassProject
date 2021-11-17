@@ -9,8 +9,7 @@ public class User
     public string Email {  get; set; } = default!;
     public string HashedPassword { get; set; } = default!;
     public string? Description { get; set; } = default!;
-    public DateTime DateOfBirth { get; set; } = default!;
-
+    public DateTime DateOfBirth { get; set; }
     public int RoleId { get; set; }
     public Role Role { get; set; } = default!;
 
