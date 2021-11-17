@@ -14,6 +14,8 @@ public class Game
     public virtual ICollection<Genre> Genres { get; set; } = default!;
 
     public virtual ICollection<User>? Users { get; set; }
+    
+    public virtual ICollection<Platform> Platforms { get; set; } = default!;
 
     public int CompanyId { get; set; }
     public virtual Company Company { get; set; } = default!;

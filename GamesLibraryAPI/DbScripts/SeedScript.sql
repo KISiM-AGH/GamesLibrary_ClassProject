@@ -76,3 +76,35 @@ INSERT [dbo].[GameGenre] ([GamesGameId], [GenresGenreId]) VALUES (3, 17)
 GO
 INSERT [dbo].[GameGenre] ([GamesGameId], [GenresGenreId]) VALUES (3, 18)
 GO
+SET IDENTITY_INSERT [dbo].[Platforms] ON 
+GO
+INSERT [dbo].[Platforms] ([PlatformId], [PlatformType]) VALUES (1, N'Pc')
+GO
+INSERT [dbo].[Platforms] ([PlatformId], [PlatformType]) VALUES (2, N'Xbox')
+GO
+INSERT [dbo].[Platforms] ([PlatformId], [PlatformType]) VALUES (3, N'PlayStation')
+GO
+INSERT [dbo].[Platforms] ([PlatformId], [PlatformType]) VALUES (4, N'Nintendo')
+GO
+SET IDENTITY_INSERT [dbo].[Platforms] OFF
+GO
+INSERT [dbo].[GamePlatform] ([GamesGameId], [PlatformsPlatformId]) VALUES (1, 1)
+GO
+INSERT [dbo].[GamePlatform] ([GamesGameId], [PlatformsPlatformId]) VALUES (1, 2)
+GO
+INSERT [dbo].[GamePlatform] ([GamesGameId], [PlatformsPlatformId]) VALUES (1, 3)
+GO
+INSERT [dbo].[GamePlatform] ([GamesGameId], [PlatformsPlatformId]) VALUES (1, 4)
+GO
+INSERT [dbo].[GamePlatform] ([GamesGameId], [PlatformsPlatformId]) VALUES (2, 1)
+GO
+INSERT [dbo].[GamePlatform] ([GamesGameId], [PlatformsPlatformId]) VALUES (2, 2)
+GO
+INSERT [dbo].[GamePlatform] ([GamesGameId], [PlatformsPlatformId]) VALUES (2, 3)
+GO
+INSERT [dbo].[GamePlatform] ([GamesGameId], [PlatformsPlatformId]) VALUES (3, 1)
+GO
+INSERT [dbo].[GamePlatform] ([GamesGameId], [PlatformsPlatformId]) VALUES (3, 2)
+GO
+INSERT [dbo].[GamePlatform] ([GamesGameId], [PlatformsPlatformId]) VALUES (3, 3)
+GO

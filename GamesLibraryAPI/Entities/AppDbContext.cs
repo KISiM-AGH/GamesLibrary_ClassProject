@@ -17,9 +17,21 @@ public class AppDbContext : DbContext
     public DbSet<Pegi> Pegies { get; set; } = default!;
     public DbSet<Role> Roles { get; set; } = default!;
     public DbSet<User> Users { get; set; } = default!;
+    public DbSet<Platform> Platforms { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Platform>()
+            .Property(p => p.PlatformId)
+            .IsRequired();
+
+        modelBuilder.Entity<Platform>()
+            .Property(p => p.PlatformType)
+            .IsRequired()
+            .HasConversion(
+                v => v.ToString(),
+                v => (AvailablePlatforms)Enum.Parse(typeof(AvailablePlatforms), v));
+        
         modelBuilder.Entity<Company>()
             .Property(c => c.CompanyName)
             .IsRequired()
