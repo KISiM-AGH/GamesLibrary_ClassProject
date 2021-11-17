@@ -3,6 +3,6 @@
 public class Role
 {
     public int RoleId { get; set; }
-    public string RoleName {  get; set; } = default!;
+    public AvailableRoles RoleName {  get; set; } = default!;
     public virtual ICollection<User> Users { get; set; } = default!;
 }

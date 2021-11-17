@@ -50,7 +50,10 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Role>()
             .Property(p => p.RoleName)
             .IsRequired()
-            .HasMaxLength(64);
+            .HasMaxLength(64)
+            .HasConversion(
+                v => v.ToString(),
+                v => (AvailableRoles)Enum.Parse(typeof(AvailableRoles), v));
 
         modelBuilder.Entity<User>()
             .Property(u => u.UserName)

@@ -70,7 +70,8 @@ public class AccountService : IAccountService
                 new Claim("name", user.Name),
                 new Claim("surname", user.Surname),
                 new Claim("email", user.Email),
-                new Claim("birth", user.DateOfBirth.ToString(CultureInfo.CurrentCulture))
+                new Claim("birth", user.DateOfBirth.ToString(CultureInfo.CurrentCulture)),
+                new Claim("role", user.RoleId.ToString())
             }),
             Expires = DateTime.UtcNow.AddDays(7),
             SigningCredentials =
