@@ -16,10 +16,10 @@ public class AccountService : IAccountService
 {
     private readonly AppDbContext _dbContext;
     private readonly IPasswordHasher<User> _passwordHasher;
-    private readonly IOptions<JwtSettings> _jwtSettings;
+    private readonly JwtSettings _jwtSettings;
 
     public AccountService(AppDbContext dbContext, IPasswordHasher<User> passwordHasher, 
-        IOptions<JwtSettings> jwtSettings)
+        JwtSettings jwtSettings)
     {
         _dbContext = dbContext;
         _passwordHasher = passwordHasher;
@@ -59,19 +59,19 @@ public class AccountService : IAccountService
             throw new BadRequestException("Invalid username or password");
 
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(_jwtSettings.Value.Secret);
+        var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
 
         var tokenDescriptor = new SecurityTokenDescriptor()
         {
             Subject = new ClaimsIdentity(new[]
             {
                 new Claim("id", user.UserId.ToString()),
-                new Claim("username", user.UserName),
-                new Claim("name", user.Name),
-                new Claim("surname", user.Surname),
-                new Claim("email", user.Email),
-                new Claim("birth", user.DateOfBirth.ToString(CultureInfo.CurrentCulture)),
-                new Claim("role", user.Role.RoleName.ToString())
+                new Claim(ClaimTypes.NameIdentifier, user.UserName),
+                new Claim(ClaimTypes.Name, user.Name),
+                new Claim(ClaimTypes.Surname, user.Surname),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.DateOfBirth, user.DateOfBirth.ToString(CultureInfo.CurrentCulture)),
+                new Claim(ClaimTypes.Role, user.Role.RoleName.ToString())
                 
             }),
             Expires = DateTime.UtcNow.AddDays(7),
@@ -97,7 +97,7 @@ public class AccountService : IAccountService
             DateOfBirth = user.DateOfBirth,
             UserName = user.UserName,
             
-            Role = user.Role.RoleName
+            Role = user.Role.RoleName.ToString()
         };
 
         return userResponse;
@@ -106,16 +106,27 @@ public class AccountService : IAccountService
     public async Task<IEnumerable<UserResponse>> GetAllUsers()
     {
         var users = await _dbContext.Users.ToListAsync();
-        var response = users.Select(user => new UserResponse()
+        var response = new List<UserResponse>();
+
+        foreach (var user in users)
         {
-            UserId = user.UserId,
-            Name = user.Name,
-            Surname = user.Surname,
-            Email = user.Email,
-            DateOfBirth = user.DateOfBirth,
-            UserName = user.UserName,
-            Role = user.Role.RoleName
-        });
+            var role = _dbContext.Roles.FirstOrDefault(r => r.RoleId == user.RoleId);
+
+            if (role == null) throw new IncorrectUserException("Invalid account!");
+            
+            var temp = new UserResponse()
+            {
+                UserId = user.UserId,
+                Name = user.Name,
+                Surname = user.Surname,
+                Email = user.Email,
+                DateOfBirth = user.DateOfBirth,
+                UserName = user.UserName,
+                Role = role.RoleName.ToString()
+            };
+            
+            response.Add(temp);
+        }
 
         return response;
     }

@@ -1,4 +1,5 @@
-﻿using GamesLibraryAPI.Entities;
+﻿using System.Security.Claims;
+using GamesLibraryAPI.Entities;
 using GamesLibraryShared;
 using GamesLibraryShared.User;
 using Microsoft.AspNetCore.Authorization;
@@ -23,9 +24,11 @@ public class AuthorizeAttribute : Attribute, IAuthorizationFilter
         if (allowAnonymous)
             return;
         
-        var user = (User)context.HttpContext.Items["User"];
+        var user = context.HttpContext?.User;
 
-        if (user is null || (_roles.Any() && !_roles.Contains(user.Role.RoleName)))
+        var role = user?.FindFirst(c => c.Type == ClaimTypes.Role)?.Value;
+
+        if (user is null || role is null || (_roles.Any() && !_roles.Contains((AvailableRoles)Enum.Parse(typeof(AvailableRoles), role))))
         {
             context.Result = new UnauthorizedObjectResult(new BaseResponse()
             {

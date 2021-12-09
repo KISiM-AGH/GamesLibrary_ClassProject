@@ -1,4 +1,6 @@
-﻿using GamesLibraryAPI.Services.Account;
+﻿using GamesLibraryAPI.Attributes;
+using GamesLibraryAPI.Entities;
+using GamesLibraryAPI.Services.Account;
 using GamesLibraryShared;
 using GamesLibraryShared.User;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +18,7 @@ public class AccountController : Controller
         _accountService = accountService;
     }
     
-    [HttpPost]
+    [HttpPost("register")]
     public ActionResult<BaseResponse> RegisterUser([FromBody]UserRegisterRequest registerUser)
     {
         _accountService.Register(registerUser);
@@ -27,7 +29,7 @@ public class AccountController : Controller
         });
     }
 
-    [HttpGet]
+    [HttpGet("authenticate")]
     public async Task<ActionResult<AuthenticateResponse>> Authenticate([FromBody] UserLoginRequest loginRequest)
     {
         var token = await _accountService.Authenticate(loginRequest);
@@ -37,5 +39,13 @@ public class AccountController : Controller
             Message = "User signed in successfully",
             JwtToken = token
         });
+    }
+
+    [Authorize(AvailableRoles.Admin)]
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<UserResponse>>> GetAllUsers()
+    {
+        var users = await _accountService.GetAllUsers();
+        return Ok(users);
     }
 }
