@@ -1,6 +1,9 @@
-﻿namespace GamesLibraryAPI.Entities;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using GamesLibraryShared.Games;
 
-public class Game
+namespace GamesLibraryAPI.Entities;
+
+public class Game : ICloneable
 {
     public int GameId { get; set; }
     public string Title { get; set; } = default!;
@@ -19,4 +22,24 @@ public class Game
 
     public int CompanyId { get; set; }
     public virtual Company Company { get; set; } = default!;
+
+    public string PhotoUrl { get; set; } = default!;
+
+    [NotMapped]
+    public AvailablePlatforms UserPlatformType { get; set; }
+
+    public object Clone()
+    {
+        return new Game()
+        {
+            Title = this.Title,
+            Genres = this.Genres,
+            Platforms = this.Platforms,
+            Premiere = this.Premiere,
+            Price = this.Price,
+            Company = this.Company,
+            PhotoUrl = this.PhotoUrl,
+            UserPlatformType = this.UserPlatformType
+        };
+    }
 }

@@ -5,6 +5,7 @@ using GamesLibraryAPI;
 using GamesLibraryAPI.Entities;
 using GamesLibraryAPI.Middleware;
 using GamesLibraryAPI.Services.Account;
+using GamesLibraryAPI.Services.Games;
 using GamesLibraryAPI.Validators;
 using GamesLibraryShared;
 using GamesLibraryShared.User;
@@ -82,6 +83,7 @@ builder.Services.AddScoped<ErrorHandlingMiddleware>();
 builder.Services.AddScoped<IValidator<UserRegisterRequest>, RegisterUserValidator>();
 builder.Services.AddScoped<IValidator<UserLoginRequest>, LoginUserValidator>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IGameService, GameService>();
 
 var app = builder.Build();
 

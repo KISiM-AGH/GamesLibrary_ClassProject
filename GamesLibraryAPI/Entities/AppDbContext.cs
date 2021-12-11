@@ -20,9 +20,13 @@ public class AppDbContext : DbContext
     public DbSet<Role> Roles { get; set; } = default!;
     public DbSet<User> Users { get; set; } = default!;
     public DbSet<Platform> Platforms { get; set; } = default!;
+    public DbSet<UserGamesPlatforms> UserGamesPlatforms { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<UserGamesPlatforms>()
+            .HasNoKey();
+
         modelBuilder.Entity<Platform>()
             .Property(p => p.PlatformId)
             .IsRequired();

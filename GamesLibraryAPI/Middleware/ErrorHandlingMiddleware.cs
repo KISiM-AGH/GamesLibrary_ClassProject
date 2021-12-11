@@ -18,7 +18,11 @@ public class ErrorHandlingMiddleware : IMiddleware
         }
         catch (UserNotFoundException ex)
         {
-            await HandleExceptionAsync(context, ex, HttpStatusCode.NoContent);
+            await HandleExceptionAsync(context, ex, HttpStatusCode.OK);
+        }
+        catch (NoGamesException ex)
+        {
+            await HandleExceptionAsync(context, ex, HttpStatusCode.OK);
         }
         catch (Exception ex)
         {
