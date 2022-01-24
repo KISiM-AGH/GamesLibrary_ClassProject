@@ -29,10 +29,10 @@ public class AccountController : Controller
         });
     }
 
-    [HttpGet("authenticate")]
-    public async Task<ActionResult<AuthenticateResponse>> Authenticate([FromBody] UserLoginRequest loginRequest)
+    [HttpPost("authenticate")]
+    public ActionResult<AuthenticateResponse> Authenticate([FromBody] UserLoginRequest loginRequest)
     {
-        var token = await _accountService.Authenticate(loginRequest);
+        var token = _accountService.Authenticate(loginRequest);
         return Ok(new AuthenticateResponse()
         {
             Error = false,
@@ -43,9 +43,9 @@ public class AccountController : Controller
 
     [Authorize(AvailableRoles.Admin)]
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<UserResponse>>> GetAllUsers()
+    public ActionResult<IEnumerable<UserResponse>> GetAllUsers()
     {
-        var users = await _accountService.GetAllUsers();
+        var users = _accountService.GetAllUsers();
         return Ok(users);
     }
 }

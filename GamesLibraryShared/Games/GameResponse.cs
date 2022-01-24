@@ -2,6 +2,7 @@
 
 public class GameResponse : BaseResponse
 {
+    public int Id { get; set; }
     public string Title { get; set; } = default!;
     public string CompanyName { get; set; } = default!;
     public DateTime Premiere { get; set; } = default!;

@@ -25,7 +25,12 @@ public class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<UserGamesPlatforms>()
-            .HasNoKey();
+            .HasKey( u => new
+            {
+                u.GameId,
+                u.PlatformId,
+                u.UserId
+            });
 
         modelBuilder.Entity<Platform>()
             .Property(p => p.PlatformId)

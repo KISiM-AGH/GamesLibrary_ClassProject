@@ -23,7 +23,7 @@ public class Game : ICloneable
     public int CompanyId { get; set; }
     public virtual Company Company { get; set; } = default!;
 
-    public string PhotoUrl { get; set; } = default!;
+    public string? PhotoUrl { get; set; } = default!;
 
     [NotMapped]
     public AvailablePlatforms UserPlatformType { get; set; }
@@ -32,6 +32,12 @@ public class Game : ICloneable
     {
         return new Game()
         {
+            GameId = GameId,
+            Description = Description,
+            PegiId = PegiId,
+            Pegi = Pegi,
+            Users = Users,
+            CompanyId = CompanyId,
             Title = this.Title,
             Genres = this.Genres,
             Platforms = this.Platforms,
