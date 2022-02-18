@@ -6,7 +6,7 @@ namespace GamesLibraryAPI.Services.Account;
 public interface IAccountService
 {
     void Register(UserRegisterRequest registerRequest);
-    Task<UserResponse> GetById(int id);
-    Task<string> Authenticate(UserLoginRequest loginRequest);
-    Task<IEnumerable<UserResponse>> GetAllUsers();
+    UserResponse GetById(int id);
+    string Authenticate(UserLoginRequest loginRequest);
+    IEnumerable<UserResponse> GetAllUsers();
 }

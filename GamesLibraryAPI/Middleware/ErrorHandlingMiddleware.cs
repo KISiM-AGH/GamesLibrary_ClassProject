@@ -43,7 +43,7 @@ public class ErrorHandlingMiddleware : IMiddleware
         await context.Response.WriteAsJsonAsync(new BaseResponse()
         {
             Error = true,
-            Message = message + exception.Message + exception.StackTrace // StackTrace only for testing purposes
+            Message = message + exception.Message /*+ exception.StackTrace*/ // StackTrace only for testing purposes
         });
     }
 }

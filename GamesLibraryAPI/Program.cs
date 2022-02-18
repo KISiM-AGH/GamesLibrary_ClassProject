@@ -8,6 +8,7 @@ using GamesLibraryAPI.Services.Account;
 using GamesLibraryAPI.Services.Games;
 using GamesLibraryAPI.Validators;
 using GamesLibraryShared;
+using GamesLibraryShared.Games;
 using GamesLibraryShared.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +19,17 @@ var builder = WebApplication.CreateBuilder(args);
 IConfiguration configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json")
     .Build();
+
+var allowSpecificOrigin = "ReactClient";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: allowSpecificOrigin,
+        builder =>
+        {
+            builder.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader();
+        });
+});
 
 // Add services to the container.
 
@@ -81,8 +93,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
+
 builder.Services.AddScoped<IValidator<UserRegisterRequest>, RegisterUserValidator>();
 builder.Services.AddScoped<IValidator<UserLoginRequest>, LoginUserValidator>();
+builder.Services.AddScoped<IValidator<GameUserRequest>, AddGameToUserValidator>();
+builder.Services.AddScoped<IValidator<GameAdminRequest>, AddGameAdminValidator>();
+
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddScoped<IUserContextService, UserContextService>();
@@ -95,6 +111,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors(allowSpecificOrigin);
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
 

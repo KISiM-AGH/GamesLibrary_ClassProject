@@ -44,11 +44,11 @@ public class AccountService : IAccountService
         _dbContext.SaveChanges();
     }
 
-    public async Task<string> Authenticate(UserLoginRequest loginRequest)
+    public string Authenticate(UserLoginRequest loginRequest)
     {
-        var user = await _dbContext.Users
+        var user = _dbContext.Users
             .Include(r => r.Role)
-            .FirstOrDefaultAsync(u => u.UserName == loginRequest.Username);
+            .FirstOrDefault(u => u.UserName == loginRequest.Username);
 
         if (user is null)
             throw new BadRequestException("Invalid username or password");
@@ -84,9 +84,9 @@ public class AccountService : IAccountService
         return tokenHandler.WriteToken(token);
     }
 
-    public async Task<UserResponse> GetById(int id)
+    public UserResponse GetById(int id)
     {
-        var user = await GetUser(id);
+        var user = GetUser(id);
 
         var userResponse = new UserResponse()
         {
@@ -103,9 +103,9 @@ public class AccountService : IAccountService
         return userResponse;
     }
 
-    public async Task<IEnumerable<UserResponse>> GetAllUsers()
+    public IEnumerable<UserResponse> GetAllUsers()
     {
-        var users = await _dbContext.Users.ToListAsync();
+        var users = _dbContext.Users.ToList();
         var response = new List<UserResponse>();
 
         foreach (var user in users)
@@ -131,10 +131,10 @@ public class AccountService : IAccountService
         return response;
     }
 
-    private async Task<User> GetUser(int id)
+    private User GetUser(int id)
     {
-        var user = await _dbContext.Users
-            .FirstOrDefaultAsync(x => x.UserId == id);
+        var user = _dbContext.Users
+            .FirstOrDefault(x => x.UserId == id);
         
         if (user is null) throw new UserNotFoundException("User not found");
         return user;
