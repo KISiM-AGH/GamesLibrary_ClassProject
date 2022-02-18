@@ -24,6 +24,10 @@ public class ErrorHandlingMiddleware : IMiddleware
         {
             await HandleExceptionAsync(context, ex, HttpStatusCode.OK);
         }
+        catch (AddGameClientException ex)
+        {
+            await HandleExceptionAsync(context, ex, HttpStatusCode.Conflict);
+        }
         catch (Exception ex)
         {
             await HandleExceptionAsync(context, ex, HttpStatusCode.InternalServerError, "Something went wrong : ");

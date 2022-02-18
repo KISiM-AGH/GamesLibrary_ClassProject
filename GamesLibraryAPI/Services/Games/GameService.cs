@@ -1,5 +1,6 @@
 ﻿using GamesLibraryAPI.Entities;
 using GamesLibraryAPI.Exceptions;
+using GamesLibraryAPI.Services.Account;
 using GamesLibraryShared.Games;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
@@ -9,10 +10,12 @@ namespace GamesLibraryAPI.Services.Games;
 public class GameService : IGameService
 {
     private readonly AppDbContext _dbContext;
+    private readonly IUserContextService _userContextService;
 
-    public GameService(AppDbContext dbContext)
+    public GameService(AppDbContext dbContext, IUserContextService userContextService)
     {
         _dbContext = dbContext;
+        _userContextService = userContextService;
     }
     
     public IEnumerable<GameResponse> GetGames()
@@ -27,8 +30,10 @@ public class GameService : IGameService
         return gamesResponse;
     }
 
-    public IEnumerable<GameResponse> GetGames(int userId, string? platform)
+    public IEnumerable<GameResponse> GetGames(string? platform)
     {
+        var userId = _userContextService.GetUserId;
+        
         var userGames = _dbContext.UserGamesPlatforms.Where(u => u.UserId == userId).ToList();
 
         var games = _dbContext.Games
@@ -46,7 +51,7 @@ public class GameService : IGameService
                     if (((AvailablePlatforms)(userGame.PlatformId - 1)).ToString() != platform) continue;
                 
                 var duplicateGame = (Game)game.Clone();
-                duplicateGame.UserPlatformType = GetPlatform(userGame.PlatformId);
+                duplicateGame.UserPlatformType = GetPlatformEnum(userGame.PlatformId);
                 userSelectedGames.Add(duplicateGame);
             }
         }
@@ -54,6 +59,45 @@ public class GameService : IGameService
         var gameResponse = CreateGameResponses(userSelectedGames.AsQueryable());
 
         return gameResponse;
+    }
+
+    public void AddGameToUser(GameUserRequest dto)
+    {
+        var userId = _userContextService.GetUserId;
+
+        if (userId != null)
+        {
+            var game = _dbContext.Games.FirstOrDefault(x => x.GameId == dto.Id);
+
+            if (game != null)
+            {
+                if (game.Title != dto.Title)
+                    throw new AddGameClientException("The given id does not match the title of the game");
+
+                var newGame = new UserGamesPlatforms()
+                {
+                    GameId = game.GameId,
+                    PlatformId = GetPlatformId(dto.Platform),
+                    UserId = (int)userId
+                };
+
+                _dbContext.UserGamesPlatforms.Add(newGame);
+                _dbContext.SaveChanges();
+
+            }
+            else
+                throw new BadRequestException("The given id does not match any game");
+        }
+        else
+        {
+            throw new Exception();
+        }
+        
+    }
+
+    public void AddGameToDataBase(GameAdminRequest)
+    {
+        
     }
 
     private static IEnumerable<GameResponse> CreateGameResponses(IQueryable<Game> games)
@@ -68,6 +112,7 @@ public class GameService : IGameService
             let platformNames = game.Platforms.Select(platform => platform.PlatformType.ToString()).ToList()
             select new GameResponse()
             {
+                Id = game.GameId,
                 Title = game.Title,
                 Genres = genresNames,
                 Platforms = platformNames,
@@ -80,7 +125,7 @@ public class GameService : IGameService
         return gamesResponse;
     }
 
-    private AvailablePlatforms GetPlatform(int platformId)
+    private AvailablePlatforms GetPlatformEnum(int platformId)
     {
         return platformId switch
         {
@@ -89,6 +134,18 @@ public class GameService : IGameService
             3 => AvailablePlatforms.PlayStation,
             4 => AvailablePlatforms.Nintendo,
             _ => AvailablePlatforms.Pc
+        };
+    }
+
+    private int GetPlatformId(AvailablePlatforms platform)
+    {
+        return platform switch
+        {
+            AvailablePlatforms.Pc => 1,
+            AvailablePlatforms.Xbox => 2,
+            AvailablePlatforms.PlayStation => 3,
+            AvailablePlatforms.Nintendo => 4,
+            _ => throw new BadRequestException("Provided request have incorrect platform")
         };
     }
 }

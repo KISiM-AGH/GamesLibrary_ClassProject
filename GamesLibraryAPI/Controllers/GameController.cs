@@ -1,5 +1,6 @@
 ﻿using GamesLibraryAPI.Attributes;
 using GamesLibraryAPI.Services.Games;
+using GamesLibraryShared;
 using GamesLibraryShared.Games;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,13 +26,26 @@ public class GameController : Controller
         return Ok(games);
     }
 
-    [HttpGet("{userId:int}")]
+    [HttpGet("user")]
+    [Authorize()]
     public ActionResult<IEnumerable<GameResponse>> GetAllUserGames([FromRoute]int userId, 
         [FromQuery] string platform)
     {
-        var games = platform == "all" ? _gameService.GetGames(userId, null).ToList()
-            : _gameService.GetGames(userId, platform).ToList();
+        var games = platform == "all" ? _gameService.GetGames(null).ToList()
+            : _gameService.GetGames(platform).ToList();
 
         return Ok(games);
+    }
+
+    [HttpPost]
+    [Authorize()]
+    public ActionResult<BaseResponse> AddGamesToUser([FromBody]GameUserRequest dto)
+    {
+        _gameService.AddGameToUser(dto);
+        return Ok(new BaseResponse()
+        {
+            Error = false,
+            Message = "Game added successfully!"
+        });
     }
 }

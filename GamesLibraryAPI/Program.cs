@@ -25,6 +25,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddDbContext<AppDbContext>();
 
 //builder.Services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
+//Test
 
 var jwtSettings = new JwtSettings();
 configuration.GetSection("JwtSettings").Bind(jwtSettings);
@@ -84,6 +85,7 @@ builder.Services.AddScoped<IValidator<UserRegisterRequest>, RegisterUserValidato
 builder.Services.AddScoped<IValidator<UserLoginRequest>, LoginUserValidator>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IGameService, GameService>();
+builder.Services.AddScoped<IUserContextService, UserContextService>();
 
 var app = builder.Build();
 
